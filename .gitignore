@@ -312,6 +312,6 @@ $RECYCLE.BIN/
 
 
 
-
+.vscode
 .env
 pipfile.lock

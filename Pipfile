@@ -6,8 +6,10 @@ name = "pypi"
 [packages]
 django = "*"
 python-dotenv = "*"
+psycopg2 = "*"
 
 [dev-packages]
+djlint = "*"
 
 [requires]
 python_version = "3.11"
