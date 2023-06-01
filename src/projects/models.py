@@ -48,5 +48,7 @@ class Tag(models.Model):
         primary_key=True, default=uuid.uuid4, unique=True, editable=False
     )
 
+    def __str__(self) -> str:
+        return self.name
 
 
