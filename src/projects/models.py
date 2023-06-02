@@ -24,7 +24,7 @@ class Project(models.Model):
     )
 
     def __str__(self) -> str:
-        return self.title
+        return f'{self.title}-->{self.id}'
 
 
 # text choices value field in Review Model

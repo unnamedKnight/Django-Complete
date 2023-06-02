@@ -8,16 +8,15 @@ from .forms import ProjectForm
 
 def projects(request):
     projects = Project.objects.all()
-
     context = {"projects": projects}
-    return render(request, "projects.html", context)
+    return render(request, "projects/projects.html", context)
 
 
 def project(request, pk):
     project = Project.objects.get(pk=pk)
 
     context = {"project": project}
-    return render(request, "single-project.html", context)
+    return render(request, "projects/single-project.html", context)
 
 
 def create_project(request):
