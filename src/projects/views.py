@@ -27,7 +27,7 @@ def create_project(request):
             form.save()
             return redirect("projects")
     context = {"form": form}
-    return render(request, "project-form.html", context)
+    return render(request, "projects/project-form.html", context)
 
 
 def update_project(request, pk):
@@ -39,7 +39,7 @@ def update_project(request, pk):
             form.save()
             return redirect("projects")
     context = {"form": form}
-    return render(request, "project-form.html", context)
+    return render(request, "projects/project-form.html", context)
 
 
 def delete_project(request, pk):
@@ -48,4 +48,4 @@ def delete_project(request, pk):
         project.delete()
         return redirect("projects")
     context = {"project": project}
-    return render(request, "delete-project.html", context)
+    return render(request, "projects/delete-project.html", context)
