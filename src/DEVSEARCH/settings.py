@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     # project apps
     "projects.apps.ProjectsConfig",
     "users.apps.UsersConfig",
+    "user_profiles.apps.UserProfilesConfig",
 
 ]
 
