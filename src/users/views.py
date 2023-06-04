@@ -17,7 +17,7 @@ from .utils import account_activation_token
 import threading
 
 # importing app models
-# from user_profiles.models import Profile
+from user_profiles.models import Profile
 
 # getting the user model
 User = get_user_model()
@@ -63,13 +63,8 @@ class RegistrationView(View):
         user.save()
 
         # creating and saving profile instance
-        # fixme--> uncomment the lines of code after checking email functionality
-        # profile = Profile.objects.create(
-        #     user=user,
-        #     first_name=form.cleaned_data["first_name"],
-        #     last_name=form.cleaned_data["last_name"],
-        # )
-        # profile.save()
+        profile = Profile.objects.create(user=user, email=user.email)
+        profile.save()
 
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         token = account_activation_token.make_token(user)
