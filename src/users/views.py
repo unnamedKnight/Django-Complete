@@ -8,7 +8,7 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
 # from django.urls import reverse_lazy
 from django.views.generic import View
-from .forms import RegistrationForm
+from .forms import RegistrationForm, LoginFrom
 
 # from django.template.loader import render_to_string
 from .utils import account_activation_token
@@ -125,3 +125,11 @@ def verification(request, uidb64, token):
     user.is_active = True
     user.save()
     return redirect("projects")
+
+
+
+def login_view(request):
+    form = LoginFrom()
+    context = {"form": form}
+
+    return render(request, "accounts/login.html", context)

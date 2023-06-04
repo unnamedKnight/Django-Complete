@@ -5,14 +5,6 @@ from django.contrib.auth.password_validation import validate_password
 from django.core import validators
 
 User = get_user_model()
-# -------------------------------------------------------------------------------------------------------------------- #
-#                                                    Important Note                                                    #
-# -------------------------------------------------------------------------------------------------------------------- #
-
-# we can also use the UserCreationForm
-# By inheriting from UserCreationForm we dont need to write any field level logic
-
-# ------------------------------------------------------ The end ----------------------------------------------------- #
 
 
 class RegistrationForm(UserCreationForm):
@@ -39,3 +31,13 @@ class RegistrationForm(UserCreationForm):
     #         raise forms.ValidationError(
     #             "Password does not match!"
     #         )
+
+
+class LoginFrom(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ["email", "password"]
+
+    def __init__(self, *args, **kwargs):
+        super(LoginFrom, self).__init__(*args, **kwargs)
+        self.fields["password"].widget = forms.PasswordInput()
