@@ -3,4 +3,5 @@ from . import views
 
 urlpatterns = [
     path("register", views.RegistrationView.as_view(), name="register"),
+    path("activate/<uidb64>/<token>/", views.verification, name="activate"),
 ]

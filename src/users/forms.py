@@ -1,38 +1,41 @@
 from django import forms
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
-from django.core.exceptions import ValidationError
-from django.forms.fields import EmailField
-from django.forms.forms import Form
+from django.contrib.auth.password_validation import validate_password
+from django.core import validators
+
+User = get_user_model()
+# -------------------------------------------------------------------------------------------------------------------- #
+#                                                    Important Note                                                    #
+# -------------------------------------------------------------------------------------------------------------------- #
+
+# we can also use the UserCreationForm
+# By inheriting from UserCreationForm we dont need to write any field level logic
+
+# ------------------------------------------------------ The end ----------------------------------------------------- #
 
 
 class RegistrationForm(UserCreationForm):
-    email = forms.EmailField(label="email")
-    password1 = forms.CharField(label="password", widget=forms.PasswordInput)
-    password2 = forms.CharField(label="Confirm password", widget=forms.PasswordInput)
+    # password = forms.CharField(widget=forms.PasswordInput(attrs={
+    #     'placeholder': 'Enter Password',
+    #     'class': 'form-control',
+    # }), validators=[validate_password])
+    # confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={
+    #     'placeholder': 'Confirm Password'
+    # }), validators=[validate_password])
 
-    def __init__(self, *args, **kwargs):
-        super(RegistrationForm, self).__init__(*args, **kwargs)
-        self.fields.pop('username')
+    class Meta:
+        model = User
+        fields = [
+            "email",
+        ]
 
-    def email_clean(self):
-        email = self.cleaned_data["email"].lower()
-        new = User.objects.filter(email=email)
-        if new.count():
-            raise ValidationError(" Email Already Exist")
-        return email
+    # def clean(self):
+    #     cleaned_data = super(RegistrationForm, self).clean()
+    #     password = cleaned_data.get('password')
+    #     confirm_password = cleaned_data.get('confirm_password')
 
-    def clean_password2(self):
-        password1 = self.cleaned_data["password1"]
-        password2 = self.cleaned_data["password2"]
-
-        if password1 and password2 and password1 != password2:
-            raise ValidationError("Password don't match")
-        return password2
-
-    def save(self, commit=True):
-        return User.objects.create_user(
-            self.cleaned_data["username"],
-            self.cleaned_data["email"],
-            self.cleaned_data["password1"],
-        )
+    #     if password != confirm_password:
+    #         raise forms.ValidationError(
+    #             "Password does not match!"
+    #         )
