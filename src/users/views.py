@@ -120,7 +120,8 @@ def verification(request, uidb64, token):
     if user is None or not account_activation_token.check_token(user, token):
         # invalid link
         return render(request, "accounts/invalid.html")
-    # user.profile.email_confirmed = True
+    user.profile.email_verified = True
+    user.profile.save()
     user.is_active = True
     user.save()
     return redirect("projects")

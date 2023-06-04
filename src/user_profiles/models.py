@@ -11,6 +11,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     full_name = models.CharField(max_length=200, blank=True, null=True)
     email = models.EmailField(max_length=500)
+    email_verified = models.BooleanField(default=False)
     location = models.CharField(max_length=200, blank=True, null=True)
     short_intro = models.CharField(max_length=200, blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
@@ -18,7 +19,7 @@ class Profile(models.Model):
         null=True,
         blank=True,
         upload_to="images/user_profiles",
-        default="images/user_profiles/avatar7.jpg",
+        default="images/user_profiles/avatar7.png",
     )
     social_github = models.CharField(max_length=200, blank=True, null=True)
     social_twitter = models.CharField(max_length=200, blank=True, null=True)
@@ -32,7 +33,7 @@ class Profile(models.Model):
 
 
     def __str__(self):
-        return str(self.full_name)
+        return str(self.user.email)
 
     class Meta:
         ordering = ['created']
