@@ -1,4 +1,4 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, login, logout, authenticate
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from django.shortcuts import redirect, render
@@ -18,6 +18,7 @@ import threading
 
 # importing app models
 from user_profiles.models import Profile
+
 
 # getting the user model
 User = get_user_model()
@@ -63,7 +64,12 @@ class RegistrationView(View):
         user.save()
 
         # creating and saving profile instance
-        profile = Profile.objects.create(user=user, email=user.email)
+        profile = Profile.objects.create(
+            first_name=user.first_name,
+            last_name=user.last_name,
+            user=user,
+            email=user.email,
+        )
         profile.save()
 
         uid = urlsafe_base64_encode(force_bytes(user.pk))
@@ -125,7 +131,6 @@ def verification(request, uidb64, token):
     user.is_active = True
     user.save()
     return redirect("projects")
-
 
 
 def login_view(request):

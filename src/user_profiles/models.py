@@ -10,7 +10,8 @@ User = get_user_model()
 # Create your models here.
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    full_name = models.CharField(max_length=200, blank=True, null=True)
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
     email = models.EmailField(max_length=500)
     email_verified = models.BooleanField(default=False)
     location = models.CharField(max_length=200, blank=True, null=True)
