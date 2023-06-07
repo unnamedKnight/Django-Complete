@@ -22,7 +22,9 @@
                                 {% endif %}
                                 {% if profile.social_twitter %}
                                     <li>
-                                        <a title="Stackoverflow" href="#" target="_blank"><i class="im im-stackoverflow"></i></a>
+                                        <a title="Stackoverflow" href="{{
+                                            profile.social_twitter
+                                        }}" target="_blank"><i class="im im-stackoverflow"></i></a>
                                     </li>
                                 {% endif %}
                                 {% if profile.social_linkedin %}

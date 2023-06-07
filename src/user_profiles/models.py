@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.db.models.signals import post_save, post_delete
 import uuid
 
 
@@ -31,12 +32,11 @@ class Profile(models.Model):
         default=uuid.uuid4, unique=True, primary_key=True, editable=False
     )
 
-
     def __str__(self):
         return str(self.user.email)
 
     class Meta:
-        ordering = ['created']
+        ordering = ["created"]
 
 
 class Skill(models.Model):
@@ -50,3 +50,12 @@ class Skill(models.Model):
 
     def __str__(self):
         return self.name
+
+
+def delete_user(sender, instance, **kwargs):
+    """Signal for deleting a user when a profile is deleted."""
+    user = instance.user
+    user.delete()
+
+
+post_delete.connect(delete_user, sender=Profile)
