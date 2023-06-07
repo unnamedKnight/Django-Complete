@@ -55,18 +55,18 @@
                         <div class="devInfo__skills">
                             {% for skill in top_skills %}
                                 <div class="devSkill">
-                                    <h4 class="devSkill__title">{{ skill.name }}</h4>
+                                    <h4 class="devSkill__title">{{ skill }}</h4>
                                     <p class="devSkill__info">{{ skill.description }}</p>
                                 </div>
                             {% endfor %}
                             <h3 class="devInfo__subtitle">Other Skills</h3>
-                            {% for skill in other_skills %}
-                                <div class="devInfo__otherSkills">
+                            <div class="devInfo__otherSkills">
+                                {% for skill in other_skills %}
                                     <span class="tag tag--pill tag--sub tag--lg">
-                                        <small>{{ skill.name }}</small>
+                                        <small>{{ skill }}</small>
                                     </span>
-                                </div>
-                            {% endfor %}
+                                {% endfor %}
+                            </div>
                         </div>
                     </div>
                     <div class="devInfo">
@@ -75,7 +75,7 @@
                             {% for project in profile.project_set.all %}
                                 <div class="column">
                                     <div class="card project">
-                                        <a href="{% url "profile" pk=project.id %}" class="project">
+                                        <a href="{% url "project" pk=project.id %}" class="project">
                                             <img class="project__thumbnail"
                                                  src="{{ project.featured_image.url }}"
                                                  alt="project thumbnail" />
@@ -87,7 +87,7 @@
                                                 </p>
                                                 <p class="project--rating">
                                                     <span style="font-weight: bold;">{{ project.vote_ratio }}%</span> Postitive
-                                                    Feedback ({{ project.vote_total }} Vote{{ project.vote_total|pluralize:"s" }})
+                                                    Feedback ({{ project.vote_total }} Vote{{ project.vote_total|pluralize:"s" }}))
                                                 </p>
                                                 <div class="project__tags">
                                                     {% for tag in project.tags.all %}
