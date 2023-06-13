@@ -5,10 +5,11 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils.encoding import force_bytes, force_str, DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.contrib import messages
 
 # from django.urls import reverse_lazy
 from django.views.generic import View
-from .forms import RegistrationForm, LoginFrom
+from .forms import RegistrationForm, LoginForm
 
 # from django.template.loader import render_to_string
 from .utils import account_activation_token
@@ -51,7 +52,7 @@ class RegistrationView(View):
             last_name = form.cleaned_data["last_name"]
             email = form.cleaned_data["email"]
             password = form.cleaned_data["password1"]
-            print(f"{email} & {password}")
+            # print(f"{email} & {password}")
 
             if not User.objects.filter(email=email).exists():
                 return self._create_new_user(
@@ -113,7 +114,7 @@ class RegistrationView(View):
 
         EmailThread(email).start()
 
-        return redirect("projects")
+        return render(request, "accounts/activation_notice.html")
 
 
 def verification(request, uidb64, token):
@@ -136,12 +137,46 @@ def verification(request, uidb64, token):
     user.profile.save()
     user.is_active = True
     user.save()
-    return redirect("projects")
+    return redirect("login")
 
 
-def login_view(request):
-    form = LoginFrom()
+def login_view(request):  # sourcery skip: extract-method
+    form = LoginForm()
+
+    if request.user.is_authenticated:
+        return redirect("projects")
+
+    if request.method == "POST":
+        form = LoginForm(request.POST)
+
+        if form.is_valid():
+            user = authenticate(
+                username=form.cleaned_data["email"],
+                password=form.cleaned_data["password"],
+            )
+
+            if not user:
+                messages.error(request, "Email or Password is invalid.")
+                context = {"form": form}
+                return render(request, "accounts/login.html", context)
+
+            if user.last_login is None:
+                messages.info(request, "You have been logged in.")
+                login(request, user)
+                return redirect("profile_detail", pk=user.profile.id)
+
+            login(request, user)
+            messages.info(request, "You have been logged in.")
+            return redirect("profiles")
+
+        else:
+            messages.error(request, "Email or Password is invalid.")
+
     context = {"form": form}
-    
 
     return render(request, "accounts/login.html", context)
+
+
+def logout_request(request):
+    logout(request)
+    return redirect("projects")

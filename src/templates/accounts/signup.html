@@ -18,7 +18,7 @@
                         <label for="formInput#text">{{ field.label }}</label>
                         {{ field }}
                         {% comment %} {% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %} {% endcomment %}
-                        {% for error in field.errors %}<p color="red">{{ error }}</p>{% endfor %}
+                        {% for error in field.errors %}<p style="color:red" >{{ error }}</p>{% endfor %}
                     </div>
                 {% endfor %}
 

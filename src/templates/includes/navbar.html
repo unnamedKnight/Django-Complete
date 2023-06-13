@@ -25,7 +25,7 @@
             <a href="{% url "create_project" %}">Add Project</a>
           </li>
           <li class="header__menuItem">
-            <a href="login.html" class="btn btn--sub">Logout</a>
+            <a href="{% url "logout" %}" class="btn btn--sub">Logout</a>
           </li>
         {% else %}
           <li class="header__menuItem">
