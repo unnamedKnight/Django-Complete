@@ -47,19 +47,25 @@ class RegistrationView(View):
         context = {"form": form}
 
         if form.is_valid():
+            first_name = form.cleaned_data["first_name"]
+            last_name = form.cleaned_data["last_name"]
             email = form.cleaned_data["email"]
             password = form.cleaned_data["password1"]
             print(f"{email} & {password}")
 
             if not User.objects.filter(email=email).exists():
-                return self._create_new_user(email, password, request)
+                return self._create_new_user(
+                    request, first_name, last_name, email, password
+                )
         return render(request, "accounts/signup.html", context)
 
-    def _create_new_user(self, email, password, request):
+    def _create_new_user(self, request, first_name, last_name, email, password):
         """
         Create a new user if user is not registered.
         """
-        user = User.objects.create_user(email=email)
+        user = User.objects.create_user(
+            first_name=first_name, last_name=last_name, email=email
+        )
         user.set_password(password)
         user.save()
 
@@ -136,5 +142,6 @@ def verification(request, uidb64, token):
 def login_view(request):
     form = LoginFrom()
     context = {"form": form}
+    
 
     return render(request, "accounts/login.html", context)

@@ -1,21 +1,12 @@
+from typing import Any
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.password_validation import validate_password
-from django.core import validators
 
 User = get_user_model()
 
 
 class RegistrationForm(UserCreationForm):
-    # password = forms.CharField(widget=forms.PasswordInput(attrs={
-    #     'placeholder': 'Enter Password',
-    #     'class': 'form-control',
-    # }), validators=[validate_password])
-    # confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={
-    #     'placeholder': 'Confirm Password'
-    # }), validators=[validate_password])
-
     class Meta:
         model = User
         fields = [
@@ -24,15 +15,17 @@ class RegistrationForm(UserCreationForm):
             "email",
         ]
 
-    # def clean(self):
-    #     cleaned_data = super(RegistrationForm, self).clean()
-    #     password = cleaned_data.get('password')
-    #     confirm_password = cleaned_data.get('confirm_password')
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super(RegistrationForm, self).__init__(*args, **kwargs)
 
-    #     if password != confirm_password:
-    #         raise forms.ValidationError(
-    #             "Password does not match!"
-    #         )
+        for name, field in self.fields.items():
+            field.widget.attrs.update({"class": "input"})
+
+    # def __init__(self, *args, **kwargs):
+    #     # first call parent's constructor
+    #     super(RegistrationForm, self).__init__(*args, **kwargs)
+    #     self.fields["first_name"].required = True
+    #     self.fields["last_name"].required = True
 
 
 class LoginFrom(forms.ModelForm):

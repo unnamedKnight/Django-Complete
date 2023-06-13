@@ -7,7 +7,7 @@
                     <div class="card text-center">
                         <div class="card__body dev">
                             <img class="avatar avatar--xl" src="{{ profile.profile_image.url }}">
-                            <h2 class="dev__name">{{ profile.full_name }}</h2>
+                            <h2 class="dev__name">{{ profile.first_name }} {{ profile.last_name }}</h2>
                             <p class="dev__title">{{ profile.short_intro }}</p>
                             {% if profile.location %}
                                 <p class="dev__location">{{ profile.location }}</p>
@@ -22,9 +22,9 @@
                                 {% endif %}
                                 {% if profile.social_twitter %}
                                     <li>
-                                        <a title="Stackoverflow" href="{{
-                                            profile.social_twitter
-                                        }}" target="_blank"><i class="im im-stackoverflow"></i></a>
+                                        <a title="Stackoverflow"
+                                           href="{{ profile.social_twitter }}"
+                                           target="_blank"><i class="im im-stackoverflow"></i></a>
                                     </li>
                                 {% endif %}
                                 {% if profile.social_linkedin %}

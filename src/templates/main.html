@@ -22,7 +22,10 @@
         {% if messages %}
             <ul class="messages">
                 {% for message in messages %}
-                    <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    <div class="alert alert--{{ message.tags }}">
+                        <p class="alert__message">{{ message }}</p>
+                        <button class="alert__close">x</button>
+                    </div>
                 {% endfor %}
             </ul>
         {% endif %}
@@ -69,4 +72,5 @@
                 </ul>
         </div> {% endcomment %}
     </body>
+    <script src="{% static "uikit/app.js" %}"></script>
 </html>

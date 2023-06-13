@@ -39,8 +39,8 @@ class CustomUserManager(BaseUserManager):
 
 class User(AbstractUser):
     username = None
-    first_name = models.CharField(max_length=255, blank=True, null=True)
-    last_name = models.CharField(max_length=255, blank=True, null=True)
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
     email = models.EmailField(_("email address"), unique=True)
     is_active = models.BooleanField(default=False)
     USERNAME_FIELD = "email"
