@@ -37,10 +37,10 @@ class Profile(models.Model):
 
     def get_full_name(self):
         """Returns the full name of the User Profile."""
-        return (f"{self.first_name} {self.last_name}")
+        return f"{self.first_name} {self.last_name}"
 
     class Meta:
-        ordering = ["created"]
+        ordering = ["-created"]
 
 
 class Skill(models.Model):

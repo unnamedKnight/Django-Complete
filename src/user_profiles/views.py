@@ -1,7 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Profile
-from .forms import ProfileForm
+from .models import Profile, Skill
+from .forms import ProfileForm, SkillForm
+from django.contrib import messages
+
 
 # Create your views here.
 
@@ -36,8 +38,56 @@ def user_account(request):
 def edit_user_account(request):
     profile = Profile.objects.get(pk=request.user.profile.id)
     form = ProfileForm(instance=profile)
+    if request.method == "POST":
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect("user_account")
 
     context = {
         "form": form,
     }
     return render(request, "user_profiles/profile_form.html", context)
+
+
+@login_required(login_url="login")
+def create_skill(request):
+    form = SkillForm()
+    if request.method == "POST":
+        form = SkillForm(request.POST)
+        if form.is_valid():
+            form.save(owner=request.user.profile)
+            messages.success(request, "Skill was added successfully.")
+            return redirect("user_account")
+    context = {
+        "form": form,
+    }
+    return render(request, "user_profiles/skill_form.html", context)
+
+
+@login_required(login_url="login")
+def update_skill(request, pk):
+    skill = Skill.objects.get(pk=pk)
+    if skill.owner != request.user.profile:
+        return redirect("projects")
+    form = SkillForm(instance=skill)
+    if request.method == "POST":
+        form = SkillForm(request.POST, instance=skill)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Skill was updated successfully.")
+            return redirect("user_account")
+    context = {
+        "form": form,
+    }
+    return render(request, "user_profiles/skill_form.html", context)
+
+
+@login_required(login_url="login")
+def delete_skill(request, pk):
+    skill = Skill.objects.get(pk=pk)
+    if skill.owner != request.user.profile:
+        return redirect("user_account")
+    skill.delete()
+    messages.info(request, "Skill was deleted successfully.")
+    return redirect("user_account")

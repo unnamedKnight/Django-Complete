@@ -1,13 +1,11 @@
-{% extends "main.html" %}
+{% extends 'main.html' %}
 {% block content %}
     <main class="formPage my-xl">
         <div class="content-box">
             <div class="formWrapper">
                 <a class="backButton" href="{% url 'user_account' %}"><i class="im im-angle-left"></i></a>
                 <br>
-                <form class="form" action="{% url 'edit_user_account' %}"
-                      method="post"
-                      enctype="mutipart/form-data">
+                <form class="form" action="{% url 'create_skill' %}" method="post">
                     {% csrf_token %}
                     <!-- Input:Text -->
                     {% for field in form %}
