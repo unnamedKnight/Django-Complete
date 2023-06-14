@@ -44,7 +44,7 @@ def update_project(request, pk):
         form = ProjectForm(request.POST, request.FILES, instance=project)
         if form.is_valid():
             form.save()
-            return redirect("projects")
+            return redirect("user_account")
     context = {"form": form}
     return render(request, "projects/project-form.html", context)
 
@@ -56,6 +56,6 @@ def delete_project(request, pk):
         return redirect("projects")
     if request.method == "POST":
         project.delete()
-        return redirect("projects")
+        return redirect("user_account")
     context = {"project": project}
     return render(request, "projects/delete-project.html", context)
