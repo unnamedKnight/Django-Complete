@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+from django.contrib.auth.decorators import login_required
 from .models import Profile
 
 # Create your views here.
@@ -22,3 +22,10 @@ def profile_detail(request, pk):
     }
 
     return render(request, "user_profiles/profile_detail.html", context)
+
+
+@login_required(login_url="login")
+def user_account(request):
+    profile = request.user.profile
+    context = {"profile": profile}
+    return render(request, "user_profiles/account.html", context)
