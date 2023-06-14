@@ -114,7 +114,9 @@ class RegistrationView(View):
 
         EmailThread(email).start()
 
-        return render(request, "accounts/activation_notice.html")
+        messages.info(request, "Please verify your email address.")
+        return redirect("login")
+        # return render(request, "accounts/activation_notice.html")
 
 
 def verification(request, uidb64, token):
@@ -135,8 +137,6 @@ def verification(request, uidb64, token):
         return render(request, "accounts/invalid.html")
     user.profile.email_verified = True
     user.profile.save()
-    user.is_active = True
-    user.save()
     return redirect("login")
 
 
@@ -160,14 +160,18 @@ def login_view(request):  # sourcery skip: extract-method
                 context = {"form": form}
                 return render(request, "accounts/login.html", context)
 
+            if not user.profile.email_verified:
+                messages.info(request, "Please verify your email address")
+                return redirect("login")
+
             if user.last_login is None:
                 messages.info(request, "You have been logged in.")
                 login(request, user)
-                return redirect("profile_detail", pk=user.profile.id)
+                return redirect("edit_user_account")
 
             login(request, user)
             messages.info(request, "You have been logged in.")
-            return redirect("profiles")
+            return redirect("projects")
 
         else:
             messages.error(request, "Email or Password is invalid.")

@@ -14,11 +14,10 @@ class Profile(models.Model):
     email = models.EmailField(max_length=500)
     email_verified = models.BooleanField(default=False)
     location = models.CharField(max_length=200, blank=True, null=True)
-    short_intro = models.CharField(max_length=200, blank=True, null=True)
+    short_intro = models.CharField(max_length=200)
     bio = models.TextField(blank=True, null=True)
     profile_image = models.ImageField(
         null=True,
-        blank=True,
         upload_to="images/user_profiles",
         default="images/user_profiles/avatar7.png",
     )

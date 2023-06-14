@@ -12,7 +12,6 @@ class Project(models.Model):
     featured_image = models.ImageField(
         default="default.jpg",
         upload_to="images/user_uploaded_content",
-        blank=True,
         null=True,
     )
     demo_link = models.CharField(max_length=2000, null=True, blank=True)
