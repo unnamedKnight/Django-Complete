@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import Profile
+from .forms import ProfileForm
 
 # Create your views here.
 
@@ -29,3 +30,14 @@ def user_account(request):
     profile = request.user.profile
     context = {"profile": profile}
     return render(request, "user_profiles/account.html", context)
+
+
+@login_required(login_url="login")
+def edit_user_account(request):
+    profile = Profile.objects.get(pk=request.user.profile.id)
+    form = ProfileForm(instance=profile)
+
+    context = {
+        "form": form,
+    }
+    return render(request, "user_profiles/profile_form.html", context)

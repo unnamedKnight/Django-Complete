@@ -6,7 +6,7 @@
                 <div class="column column--1of3">
                     <div class="card text-center">
                         <div class="card__body dev">
-                            <a class="tag tag--pill tag--main settings__btn" href="#"><i class="im im-edit"></i> Edit</a>
+                            <a class="tag tag--pill tag--main settings__btn" href="{% url "edit_user_account" %}"><i class="im im-edit"></i> Edit</a>
                             <img class="avatar avatar--xl dev__avatar"
                                  src="{{ profile.profile_image.url }}">
                             <h2 class="dev__name">{{ profile.get_full_name }}</h2>
@@ -71,28 +71,26 @@
             </div>
             <table class="settings__table">
                 {% for project in profile.project_set.all %}
-                <tr>
-                    <td class="settings__thumbnail">
-                        <a href="{% url "project" project.id %}">
-                            <img src="{{ project.featured_image.url }}" alt="Project Thumbnail" />
-                        </a>
-                    </td>
-                    <td class="settings__tableInfo">
-                        <a href="{% url "project" project.id %}">{{ project.title }}</a>
-                        <p>
-                          {{ project.description|slice:"70" }}
-                        </p>
-                    </td>
-                    <td class="settings__tableActions">
-                        <a class="tag tag--pill tag--main settings__btn" href="#"><i class="im im-edit"></i> Edit</a>
-                    <a class="tag tag--pill tag--main settings__btn" href="#"><i class="im im-x-mark-circle-o"></i>
-                Delete</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
-    </div>
+                    <tr>
+                        <td class="settings__thumbnail">
+                            <a href="{% url "project" project.id %}">
+                                <img src="{{ project.featured_image.url }}" alt="Project Thumbnail" />
+                            </a>
+                        </td>
+                        <td class="settings__tableInfo">
+                            <a href="{% url "project" project.id %}">{{ project.title }}</a>
+                            <p>{{ project.description|slice:"70" }}</p>
+                        </td>
+                        <td class="settings__tableActions">
+                            <a class="tag tag--pill tag--main settings__btn" href="#"><i class="im im-edit"></i> Edit</a>
+                        <a class="tag tag--pill tag--main settings__btn" href="#"><i class="im im-x-mark-circle-o"></i>
+                    Delete</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+</div>
 </div>
 </main>
 {% endblock %}
