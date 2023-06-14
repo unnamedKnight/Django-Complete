@@ -56,7 +56,9 @@ def create_skill(request):
     if request.method == "POST":
         form = SkillForm(request.POST)
         if form.is_valid():
-            form.save(owner=request.user.profile)
+            skill = form.save(commit=False)
+            skill.owner = request.user.profile
+            skill.save()
             messages.success(request, "Skill was added successfully.")
             return redirect("user_account")
     context = {

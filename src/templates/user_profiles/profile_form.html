@@ -7,7 +7,7 @@
                 <br>
                 <form class="form" action="{% url 'edit_user_account' %}"
                       method="post"
-                      enctype="mutipart/form-data">
+                      enctype="multipart/form-data">
                     {% csrf_token %}
                     <!-- Input:Text -->
                     {% for field in form %}

@@ -5,7 +5,7 @@
             <div class="formWrapper">
                 <a class="backButton" href="{% url 'user_account' %}"><i class="im im-angle-left"></i></a>
                 <br>
-                <form class="form" action="{% url 'create_skill' %}" method="post">
+                <form class="form" method="post">
                     {% csrf_token %}
                     <!-- Input:Text -->
                     {% for field in form %}
