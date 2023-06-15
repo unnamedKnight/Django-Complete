@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from .models import Profile, Skill
 from .forms import ProfileForm, SkillForm
 from django.contrib import messages
@@ -9,8 +10,19 @@ from django.contrib import messages
 
 
 def profiles(request):
-    profiles = Profile.objects.all()
-    context = {"profiles": profiles}
+    search_query = ""
+
+    skills = Skill.objects.filter(name__icontains=search_query)
+
+    profiles = Profile.objects.distinct().filter(
+        Q(first_name__icontains=search_query)
+        | Q(last_name__icontains=search_query)
+        | Q(short_intro__icontains=search_query)
+        # querying if there are any profile available that matches
+        # the result of the skills queryset
+        | Q(skill__in=skills)
+    )
+    context = {"profiles": profiles, "search_query": search_query}
     return render(request, "user_profiles/profiles.html", context)
 
 
