@@ -2,15 +2,29 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q
-from .models import Project
+from .models import Project, Tag
 from .forms import ProjectForm
 
 # Create your views here.
 
 
 def projects(request):
-    projects = Project.objects.filter()
-    context = {"projects": projects}
+    search_query = ""
+
+    if request.GET.get('search_query'):
+        search_query = request.GET.get('search_query')
+
+    tags_queryset = Tag.objects.filter(name=search_query)
+    projects = Project.objects.distinct().filter(
+        Q(title__icontains=search_query)
+        | Q(description__icontains=search_query)
+        | Q(owner__first_name__icontains=search_query)
+        | Q(owner__last_name__icontains=search_query)
+        # we are checking if the tags in a project are available in
+        # the tags_queryset
+        | Q(tags__in=tags_queryset)
+    )
+    context = {"projects": projects, "search_query": search_query}
     return render(request, "projects/projects.html", context)
 
 

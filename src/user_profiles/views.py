@@ -12,15 +12,18 @@ from django.contrib import messages
 def profiles(request):
     search_query = ""
 
-    skills = Skill.objects.filter(name__icontains=search_query)
+    if request.GET.get('search_query'):
+        search_query = request.GET.get('search_query')
+
+    skills_queryset = Skill.objects.filter(name__icontains=search_query)
 
     profiles = Profile.objects.distinct().filter(
         Q(first_name__icontains=search_query)
         | Q(last_name__icontains=search_query)
         | Q(short_intro__icontains=search_query)
-        # querying if there are any profile available that matches
-        # the result of the skills queryset
-        | Q(skill__in=skills)
+        # we are checking if the skills in a profile are available in
+        # the skills_queryset
+        | Q(skill__in=skills_queryset)
     )
     context = {"profiles": profiles, "search_query": search_query}
     return render(request, "user_profiles/profiles.html", context)
