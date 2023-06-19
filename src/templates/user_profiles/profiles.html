@@ -13,12 +13,7 @@
                     <form class="form" action="{% url 'profiles' %}" method="get">
                         <div class="form__field">
                             <label for="formInput#search">Search Developers</label>
-                            <input class="input input--text"
-                                   id="formInput#search"
-                                   type="text"
-                                   name="search_query"
-                                   value={{ search_query }}
-                                   placeholder="Search by developer name" />
+                            <input class="input input--text" id="formInput#search" type="text" name="search_query" value={{ search_query }} placeholder="Search by developer name" />
                         </div>
                         <input class="btn btn--sub btn--lg" type="submit" value="Search" />
                     </form>
@@ -29,7 +24,7 @@
         <section class="devlist">
             <div class="container">
                 <div class="grid grid--three">
-                    {% for profile in profiles %}
+                    {% for profile in page.object_list %}
                         <div class="column card">
                             <div class="dev">
                                 <a href="{% url "profile_detail" pk=profile.id %}" class="card__body">
@@ -57,5 +52,42 @@
                 </div>
             </div>
         </section>
+
+        
+        {% if page.has_other_pages %}
+            <div class="pagination">
+                <ul class="container">
+                    {% if not page.has_previous %}
+                        <li>
+                            <a href="" class="btn btn--disabled">&#10094; Prev</a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a href="?page={{ page.previous_page_number }}" class="btn">&#10094; Prev</a>
+                        </li>
+                    {% endif %}
+                    {% for num in page.paginator.page_range %}
+                        {% if page.number == num %}
+                            <li>
+                                <a href="?page={{ num }}" class="btn btn--sub">{{ num }}</a>
+                            </li>
+                        {% elif num > page.number|add:'-3' and num < page.number|add:'3' %}
+                            <li>
+                                <a href="?page={{ num }}" class="btn">{{ num }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if not page.has_next %}
+                        <li>
+                            <a href="" class="btn btn--disabled">Next &#10095;</a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a href="?page={{ page.next_page_number }}" class="btn">Next &#10095;</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        {% endif %}
     </main>
 {% endblock %}

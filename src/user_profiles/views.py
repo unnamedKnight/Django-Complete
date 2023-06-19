@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.db.models import Q
 from .models import Profile, Skill
 from .forms import ProfileForm, SkillForm
@@ -10,8 +11,9 @@ from django.contrib import messages
 
 
 def profiles(request):
-    search_query = ""
 
+    page_num = request.GET.get('page')
+    search_query = ""
     if request.GET.get('search_query'):
         search_query = request.GET.get('search_query')
 
@@ -25,7 +27,9 @@ def profiles(request):
         # the skills_queryset
         | Q(skill__in=skills_queryset)
     )
-    context = {"profiles": profiles, "search_query": search_query}
+    project_paginator = Paginator(profiles, 3)
+    page = project_paginator.get_page(page_num)
+    context = {"page": page, "search_query": search_query}
     return render(request, "user_profiles/profiles.html", context)
 
 
