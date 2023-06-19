@@ -25,7 +25,23 @@ class Project(models.Model):
     )
 
     def __str__(self) -> str:
-        return f'{self.title}-->{self.id}'
+        return f"{self.title}-->{self.id}"
+
+    @property
+    def reviewrs(self) -> list():
+        """Returns a list of reviewrs of a given project."""
+        return self.review_set.all().values_list("review_owner", flat=True)
+
+
+    @property
+    def get_vote_count(self):
+        reviews = self.reviews_set.all()
+        upvotes = reviews.filter(value="up").count()
+        ratio = (upvotes / reviews.count()) * 100
+        self.vote_total = reviews.count()
+        self.vote_ratio = ratio
+        self.save()
+
 
 
 # text choices value field in Review Model
@@ -35,7 +51,7 @@ class VoteTypes(models.TextChoices):
 
 
 class Review(models.Model):
-    # review_owner = models.ForeignKey()
+    review_owner = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     body = models.TextField(null=True, blank=True)
     value = models.CharField(max_length=50, choices=VoteTypes.choices)
@@ -43,6 +59,14 @@ class Review(models.Model):
     id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, unique=True, editable=False
     )
+
+    class Meta:
+        # one profile can have only one review per project
+        # unique_together will take care of that
+        unique_together = [
+            ["review_owner", "project"],
+        ]
+        ordering = ["-created"]
 
     def __str__(self) -> str:
         return self.value

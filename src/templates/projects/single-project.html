@@ -27,7 +27,8 @@
                     <img class="singleProject__preview"
                          src="{{ project.featured_image.url }}"
                          alt="portfolio thumbnail" />
-                    <a href="profile.html" class="singleProject__developer">{{ project.owner.first_name }} {{ project.owner.last_name }}</a>
+                    <a href="{% url 'profile_detail' project.owner.id %}"
+                       class="singleProject__developer">{{ project.owner.first_name }} {{ project.owner.last_name }}</a>
                     <h2 class="singleProject__title">{{ project.title }}</h2>
                     <h3 class="singleProject__subtitle">About the Project</h3>
                     <div class="singleProject__info">{{ project.description }}</div>
@@ -36,47 +37,44 @@
                         <h5 class="project--rating">
                             {{ project.vote_ratio }}% Postitive Feedback ({{ project.vote_total }} Vote{{ project.vote_total|pluralize:"s" }})
                         </h5>
-                        <form class="form" action="#" method="POST">
-                            <!-- Textarea -->
-                            <div class="form__field">
-                                <label for="formInput#textarea">Comments:</label>
-                                <textarea class="input input--textarea"
-                                          name="message"
-                                          id="formInput#textarea"
-                                          placeholder="Write your comments here..."></textarea>
-                            </div>
-                            <input class="btn btn--sub btn--lg" type="submit" value="Comments" />
-                        </form>
+                        {% if request.user.profile == project.owner %}
+                            <p>You cannot review your own project.</p>
+                        {% elif request.user.profile in project.reviewrs %}
+                            <p>You have already reviewd this project.</p>
+                        {% elif request.user.is_authenticated %}
+                            <form class="form"
+                                  action="{% url 'create_review' project.id %}"
+                                  method="POST">
+                                {% csrf_token %}
+                                <!-- Textarea -->
+                                {% for field in form %}
+                                    <div class="form__field">
+                                        <label for="formInput#textarea">{{ field.label }}</label>
+                                        {{ field }}
+                                    </div>
+                                {% endfor %}
+                                <input class="btn btn--sub btn--lg" type="submit" value="Comments" />
+                            </form>
+                        {% else %}
+                        <a href="{% url 'login' %}">Please Login to leave a reivew.</a>
+                        {% endif %}
                         <div class="commentList">
-                            <div class="comment">
-                                <a href="profile.html">
-                                    <img class="avatar avatar--md"
-                                         src="https://pbs.twimg.com/profile_images/1335382240931368961/b3wSZKj4_400x400.jpg"
-                                         alt="user" />
-                                </a>
-                                <div class="comment__details">
-                                    <a href="profile.html" class="comment__author">Sulamita Ivanov</a>
-                                    <p class="comment__info">
-                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit alias numquam perferendis
-                                        mollitia minus minima exercitationem possimus ab deserunt qui, soluta iusto doloribus eveniet
-                                        similique consequuntur ratione, dignissimos ut magni laborum quo.
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="comment">
-                                <a href="profile.html">
-                                    <img class="avatar avatar--md"
-                                         src="https://avatars.githubusercontent.com/u/33843378"
-                                         alt="user" />
-                                </a>
-                                <div class="comment__details">
-                                    <a href="profile.html" class="comment__author">Dennis Ivanov</a>
-                                    <p class="comment__info">
-                                        Consectetur adipisicing elit. Reprehenderit alias numquam perferendis mollitia minus minima
-                                        exercitationem possimus ab deserunt qui, ratione, dignissimos ut magni laborum quo.
-                                    </p>
-                                </div>
-                            </div>
+                            {% for review in project.review_set.all %}
+                                {% if review.body %}
+                                    <div class="comment">
+                                        <a href="{% url 'profile_detail' review.review_owner.id %}">
+                                            <img class="avatar avatar--md"
+                                                 src="{{ review.review_owner.profile_image.url }}"
+                                                 alt="user" />
+                                        </a>
+                                        <div class="comment__details">
+                                            <a href="{% url 'profile_detail' review.review_owner.id %}"
+                                               class="comment__author">{{ review.review_owner.get_full_name }}</a>
+                                            <p class="comment__info">{{ review.body|linebreaksbr }}</p>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
