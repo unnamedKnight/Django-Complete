@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.contrib import messages
 from django.db.models import Q
 from .models import Project, Tag
@@ -9,8 +10,9 @@ from .forms import ProjectForm
 
 
 def projects(request):
-    search_query = ""
 
+    page_num = request.GET.get('page')
+    search_query = ""
     if request.GET.get('search_query'):
         search_query = request.GET.get('search_query')
 
@@ -24,7 +26,11 @@ def projects(request):
         # the tags_queryset
         | Q(tags__in=tags_queryset)
     )
-    context = {"projects": projects, "search_query": search_query}
+    project_paginator = Paginator(projects, 3)
+
+    page = project_paginator.get_page(page_num)
+    context = {"page": page, "search_query": search_query}
+    # context = {"projects": projects, "search_query": search_query}
     return render(request, "projects/projects.html", context)
 
 
