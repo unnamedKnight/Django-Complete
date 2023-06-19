@@ -15,6 +15,7 @@ def projects(request):
     search_query = ""
     if request.GET.get('search_query'):
         search_query = request.GET.get('search_query')
+        search_query = search_query.capitalize()
 
     tags_queryset = Tag.objects.filter(name=search_query)
     projects = Project.objects.distinct().filter(
@@ -26,7 +27,7 @@ def projects(request):
         # the tags_queryset
         | Q(tags__in=tags_queryset)
     )
-    project_paginator = Paginator(projects, 3)
+    project_paginator = Paginator(projects, 2)
 
     page = project_paginator.get_page(page_num)
     context = {"page": page, "search_query": search_query}

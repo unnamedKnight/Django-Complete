@@ -52,42 +52,77 @@
                 </div>
             </div>
         </section>
-
-
         {% if page.has_other_pages %}
             <div class="pagination">
                 <ul class="container">
-                    {% if not page.has_previous %}
-                        <li>
-                            <a href="" class="btn btn--disabled">&#10094; Prev</a>
-                        </li>
-                    {% else %}
-                        <li>
-                            <a href="?page={{ page.previous_page_number }}" class="btn">&#10094; Prev</a>
-                        </li>
-                    {% endif %}
-                    {% for num in page.paginator.page_range %}
-                        {% if page.number == num %}
+                    {% if search_query %}
+                        {% if not page.has_previous %}
                             <li>
-                                <a href="?page={{ num }}" class="btn btn--sub">{{ num }}</a>
+                                <a href="" class="btn btn--disabled">&#10094; Prev</a>
                             </li>
-                        {% elif num > page.number|add:'-3' and num < page.number|add:'3' %}
+                        {% else %}
                             <li>
-                                <a href="?page={{ num }}" class="btn">{{ num }}</a>
+                                <a href="?search_query={{ search_query }}&page={{ page.previous_page_number }}"
+                                   class="btn">&#10094; Prev</a>
                             </li>
                         {% endif %}
-                    {% endfor %}
-                    {% if not page.has_next %}
-                        <li>
-                            <a href="" class="btn btn--disabled">Next &#10095;</a>
-                        </li>
+                        {% for num in page.paginator.page_range %}
+                            {% if page.number == num %}
+                                <li>
+                                    <a href="?search_query={{ search_query }}&page={{ num }}"
+                                       class="btn btn--sub">{{ num }}</a>
+                                </li>
+                            {% elif num > page.number|add:'-3' and num < page.number|add:'3' %}
+                                <li>
+                                    <a href="?search_query={{ search_query }}&page={{ num }}" class="btn">{{ num }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                        {% if not page.has_next %}
+                            <li>
+                                <a href="" class="btn btn--disabled">Next &#10095;</a>
+                            </li>
+                        {% else %}
+                            <li>
+                                <a href="?search_query={{ search_query }}&page={{ page.next_page_number }}"
+                                   class="btn">Next &#10095;</a>
+                            </li>
+                        {% endif %}
                     {% else %}
-                        <li>
-                            <a href="?page={{ page.next_page_number }}" class="btn">Next &#10095;</a>
-                        </li>
+                        {% comment %} -- if there is no search_query then the following logic will run {% endcomment %}
+                        {% if not page.has_previous %}
+                            <li>
+                                <a href="" class="btn btn--disabled">&#10094; Prev</a>
+                            </li>
+                        {% else %}
+                            <li>
+                                <a href="?page={{ page.previous_page_number }}" class="btn">&#10094; Prev</a>
+                            </li>
+                        {% endif %}
+                        {% for num in page.paginator.page_range %}
+                            {% if page.number == num %}
+                                <li>
+                                    <a href="?page={{ num }}" class="btn btn--sub">{{ num }}</a>
+                                </li>
+                            {% elif num > page.number|add:'-3' and num < page.number|add:'3' %}
+                                <li>
+                                    <a href="?page={{ num }}" class="btn">{{ num }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                        {% if not page.has_next %}
+                            <li>
+                                <a href="" class="btn btn--disabled">Next &#10095;</a>
+                            </li>
+                        {% else %}
+                            <li>
+                                <a href="?page={{ page.next_page_number }}" class="btn">Next &#10095;</a>
+                            </li>
+                        {% endif %}
                     {% endif %}
                 </ul>
             </div>
         {% endif %}
     </main>
+</main>
 {% endblock %}
