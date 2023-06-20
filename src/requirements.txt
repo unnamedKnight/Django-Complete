@@ -1,0 +1,12 @@
+-i https://pypi.org/simple
+asgiref==3.7.2 ; python_version >= '3.7'
+dj-database-url==2.0.0
+django==4.2.2
+gunicorn==20.1.0
+pillow==9.5.0
+psycopg2==2.9.6
+python-dotenv==1.0.0
+setuptools==68.0.0 ; python_version >= '3.7'
+sqlparse==0.4.4 ; python_version >= '3.5'
+typing-extensions==4.6.3 ; python_version >= '3.7'
+tzdata==2023.3 ; sys_platform == 'win32'
