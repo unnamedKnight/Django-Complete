@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
-from .models import Profile, Skill
+from django.shortcuts import get_object_or_404
+from .models import Profile, Skill, Message
 from .forms import ProfileForm, SkillForm
 from django.contrib import messages
 
@@ -11,11 +12,10 @@ from django.contrib import messages
 
 
 def profiles(request):
-
-    page_num = request.GET.get('page')
+    page_num = request.GET.get("page")
     search_query = ""
-    if request.GET.get('search_query'):
-        search_query = request.GET.get('search_query')
+    if request.GET.get("search_query"):
+        search_query = request.GET.get("search_query")
 
     skills_queryset = Skill.objects.filter(name__icontains=search_query)
 
@@ -112,3 +112,28 @@ def delete_skill(request, pk):
     skill.delete()
     messages.info(request, "Skill was deleted successfully.")
     return redirect("user_account")
+
+
+@login_required(login_url="login")
+def inbox(request):
+    profile = request.user.profile
+    messages_queryset = profile.messages.all()
+    unread_messages_count = messages_queryset.filter(is_read=False).count()
+    context = {
+        "messages_queryset": messages_queryset,
+        "unread_messages_count": unread_messages_count,
+    }
+    return render(request, "user_profiles/inbox.html", context)
+
+
+@login_required(login_url="login")
+def view_messages(request, pk):
+    profile = request.user.profile
+    message_obj = profile.messages.get(pk=pk)
+    if message_obj.is_read == False:
+        message_obj.is_read = True
+        message_obj.save()
+    context = {
+        "message_obj": message_obj,
+    }
+    return render(request, "user_profiles/message.html", context)

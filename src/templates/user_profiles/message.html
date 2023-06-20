@@ -1,0 +1,16 @@
+{% extends 'main.html' %}
+{% block content %}
+    <main class="messagePage my-xl">
+        <div class="content-box">
+            <div class="message">
+                <a class="backButton" href="{{ request.META.HTTP_REFERER }}"><i class="im im-angle-left"></i></a>
+                <h2 class="message__subject">
+                    {{ message_obj.subject }}
+                </h4>
+                <a href="profile.html" class="message__author">{{ message_obj.name }}</a>
+                <p class="message__date">{{ messsage_obj.created }}</p>
+                <div class="message__body">{{ message_obj.body|linebreaksbr }}</div>
+            </div>
+        </div>
+    </main>
+{% endblock %}
