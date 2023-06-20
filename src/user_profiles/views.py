@@ -4,7 +4,12 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from .models import Profile, Skill, Message
-from .forms import ProfileForm, SkillForm
+from .forms import (
+    ProfileForm,
+    SkillForm,
+    UnauthenticatedMessageForm,
+    AuthenticatedMessageForm,
+)
 from django.contrib import messages
 
 
@@ -130,10 +135,42 @@ def inbox(request):
 def view_messages(request, pk):
     profile = request.user.profile
     message_obj = profile.messages.get(pk=pk)
-    if message_obj.is_read == False:
+    if message_obj.is_read is False:
         message_obj.is_read = True
         message_obj.save()
     context = {
         "message_obj": message_obj,
     }
     return render(request, "user_profiles/message.html", context)
+
+
+def create_message(request, pk):
+    recipient = Profile.objects.get(pk=pk)
+    #- if user is logged in
+    if request.user.is_authenticated:
+        form = AuthenticatedMessageForm()
+        if request.method == "POST":
+            form = AuthenticatedMessageForm(request.POST)
+            if form.is_valid():
+                message_obj = form.save(commit=False)
+                message_obj.sender = request.user.profile
+                message_obj.recipient = recipient
+                message_obj.name = request.user.profile.get_full_name()
+                message_obj.email = request.user.profile.email
+                message_obj.save()
+                return redirect("profile_detail", pk=recipient.id)
+        context = {"form": form, "recipient": recipient}
+        return render(request, "user_profiles/message_form.html", context)
+
+    form = UnauthenticatedMessageForm()
+    if request.method == "POST":
+        form = UnauthenticatedMessageForm(request.POST)
+        if form.is_valid():
+            message_obj = form.save(commit=False)
+            message_obj.sender = None
+            message_obj.recipient = recipient
+            message_obj.save()
+            return redirect("profile_detail", pk=recipient.id)
+    context = {"form": form, "recipient": recipient}
+    return render(request, "user_profiles/message_form.html", context)
+
