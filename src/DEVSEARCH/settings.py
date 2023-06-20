@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 from dotenv import load_dotenv
+import dj_database_url
 import os
 
 load_dotenv()
@@ -83,13 +84,17 @@ WSGI_APPLICATION = "DEVSEARCH.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": "Django Complete",
+#         "USER": "postgres",
+#         "PASSWORD": "superuser",
+#     }
+# }
+
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "Django Complete",
-        "USER": "postgres",
-        "PASSWORD": "superuser",
-    }
+    "default": dj_database_url.parse(os.getenv("DATABASE"))
 }
 
 
