@@ -10,6 +10,7 @@ psycopg2 = "*"
 pillow = "*"
 dj-database-url = "*"
 gunicorn = "*"
+six = "*"
 
 [dev-packages]
 djlint = "*"
